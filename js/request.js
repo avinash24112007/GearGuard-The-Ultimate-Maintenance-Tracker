@@ -26,9 +26,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     equipSelect.addEventListener('change', (e) => {
                         const selected = equipSelect.options[equipSelect.selectedIndex];
                         const category = selected.dataset.category;
-                        const catSelect = document.querySelector('select[name="equipmentCategory"]');
-                        if (category && catSelect) {
-                            catSelect.value = category;
+                        const catInput = document.getElementById('hiddenCategory');
+                        if (category && catInput) {
+                            catInput.value = category;
                         }
                     });
                 }
