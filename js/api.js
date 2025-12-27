@@ -132,6 +132,14 @@ const api = {
             console.error("Failed to fetch teams:", error);
             return [];
         }
+    },
+
+    async resetDatabase() {
+        const response = await fetch(`${API_BASE_URL}/reset`, {
+            method: 'DELETE'
+        });
+        if (!response.ok) throw new Error("Failed to reset database");
+        return await response.json();
     }
 };
 

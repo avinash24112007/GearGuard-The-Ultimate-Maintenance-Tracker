@@ -34,7 +34,7 @@ function setupEventListeners() {
     document.getElementById('btnPrev').addEventListener('click', () => navigate(-1));
     document.getElementById('btnNext').addEventListener('click', () => navigate(1));
     document.getElementById('btnToday').addEventListener('click', () => {
-        currentDate = new Date('2024-12-15T12:00:00'); // Reset to demo "today"
+        currentDate = new Date(); // Reset to actual today
         render();
     });
 

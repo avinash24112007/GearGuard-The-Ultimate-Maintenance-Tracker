@@ -164,10 +164,37 @@ function handleSearch(e) {
     renderTable(filtered);
 }
 
-// Attach Search Listener
+// Attach Search Listener and Initialize
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize dashboard data
+    initDashboard();
+
     const searchInput = document.getElementById('dashboardSearch');
     if (searchInput) {
         searchInput.addEventListener('input', handleSearch);
+    }
+
+    // Refresh Button
+    const refreshBtn = document.getElementById('refreshBtn');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => {
+            initDashboard();
+        });
+    }
+
+    // Reset DB Button
+    const resetBtn = document.getElementById('resetDbBtn');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', async () => {
+            if (confirm("WARNING: This will delete ALL data (Reports, Equipment, Teams). Are you sure?")) {
+                try {
+                    await window.gearGuardApi.resetDatabase();
+                    alert("Database reset successfully.");
+                    initDashboard(); // Refresh empty
+                } catch (e) {
+                    alert("Failed to reset: " + e.message);
+                }
+            }
+        });
     }
 });

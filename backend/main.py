@@ -99,3 +99,18 @@ def create_team(team: schemas.TeamCreate, db: Session = Depends(get_db)):
 def get_teams(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     teams = db.query(models.Team).offset(skip).limit(limit).all()
     return teams
+
+@app.delete("/reset")
+def reset_database(db: Session = Depends(get_db)):
+    """
+    DANGER: Clears all data from the database.
+    """
+    try:
+        db.query(models.MaintenanceLog).delete()
+        db.query(models.Equipment).delete()
+        db.query(models.Team).delete()
+        db.commit()
+        return {"message": "Database successfully reset."}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))

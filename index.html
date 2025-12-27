@@ -106,8 +106,14 @@
             <button class="btn-filter" title="Filter" onclick="alert('Filter functionality - Coming soon!')">
               <i class="fas fa-filter"></i>
             </button>
+            <button class="btn-filter" id="refreshBtn" title="Refresh Data" style="margin-left:5px;">
+              <i class="fas fa-sync"></i>
+            </button>
           </div>
-          <button class="btn-new" onclick="window.location.href='maintenance-request.html'">New</button>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-new" onclick="window.location.href='maintenance-request.html'">New</button>
+            <button class="btn-new" id="resetDbBtn" style="background:#dc3545;">Reset DB</button>
+          </div>
         </div>
         <table>
           <thead>

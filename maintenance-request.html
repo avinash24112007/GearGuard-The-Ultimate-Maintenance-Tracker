@@ -35,7 +35,8 @@
 <body class="dashboard-active">
 
     <!-- Theme Toggle -->
-    <button class="theme-toggle" id="themeToggle">☀️</button>
+    <button class="theme-toggle" id="themeToggle"
+        style="position:fixed; top:80px; right:20px; z-index:1000; background:none; border:none; font-size:1.5rem; cursor:pointer;">☀️</button>
 
     <div class="dashboard-view active">
         <!-- EXACT Dashboard Header Structure -->
@@ -118,16 +119,8 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label>Equipment Category</label>
-                            <div class="form-field">
-                                <select name="equipmentCategory">
-                                    <option value="Electronics">Electronics</option>
-                                    <option value="Monitors" selected>Monitors</option>
-                                    <option value="Furniture">Furniture</option>
-                                </select>
-                            </div>
-                        </div>
+                        <!-- Hidden Category Input (Auto-mapped) -->
+                        <input type="hidden" name="equipmentCategory" id="hiddenCategory">
 
                         <div class="form-group">
                             <label>Request Date</label>
