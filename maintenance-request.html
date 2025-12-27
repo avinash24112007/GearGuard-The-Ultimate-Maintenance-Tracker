@@ -96,10 +96,18 @@
                         <div class="form-group">
                             <label>Created By</label>
                             <div class="form-field">
-                                <div class="user-field">
-                                    <div class="user-avatar" style="background:#8d6e63;"></div>
-                                    <span>Mitchell Admin</span>
-                                </div>
+                                <input type="text" name="createdBy" id="createdByInput" value="Mitchell Admin"
+                                    placeholder="Your name...">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Equipment Name</label>
+                            <div class="form-field">
+                                <select id="equipmentSelect" name="equipmentName">
+                                    <option value="">Select Equipment...</option>
+                                    <!-- Dynamic Population -->
+                                </select>
                             </div>
                         </div>
 

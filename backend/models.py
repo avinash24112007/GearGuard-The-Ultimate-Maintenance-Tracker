@@ -7,6 +7,7 @@ class MaintenanceLog(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     description = Column(Text)
+    equipment_name = Column(String, nullable=True) # Linked equipment Item
     
     
     created_by = Column(String)

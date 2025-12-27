@@ -7,6 +7,50 @@ document.addEventListener('DOMContentLoaded', function () {
     const priorityInput = document.getElementById('priorityInput');
     let currentPriority = 1;
 
+    // Load Data for Dropdowns
+    async function loadDropdowns() {
+        try {
+            if (window.gearGuardApi) {
+                // Equipment
+                const equipments = await window.gearGuardApi.getEquipment();
+                const equipSelect = document.getElementById('equipmentSelect');
+                if (equipSelect) {
+                    equipments.forEach(item => {
+                        const opt = document.createElement('option');
+                        opt.value = item.name;
+                        opt.textContent = item.name;
+                        opt.dataset.category = item.category;
+                        equipSelect.appendChild(opt);
+                    });
+
+                    equipSelect.addEventListener('change', (e) => {
+                        const selected = equipSelect.options[equipSelect.selectedIndex];
+                        const category = selected.dataset.category;
+                        const catSelect = document.querySelector('select[name="equipmentCategory"]');
+                        if (category && catSelect) {
+                            catSelect.value = category;
+                        }
+                    });
+                }
+
+                // Teams
+                const teams = await window.gearGuardApi.getTeams();
+                const teamSelect = document.querySelector('select[name="team"]');
+                if (teamSelect) {
+                    teams.forEach(team => {
+                        const opt = document.createElement('option');
+                        opt.value = team.name;
+                        opt.textContent = team.name;
+                        teamSelect.appendChild(opt);
+                    });
+                }
+            }
+        } catch (e) {
+            console.error("Failed to load dropdowns:", e);
+        }
+    }
+    loadDropdowns();
+
     // Initialize star rating
     updateStarRating(currentPriority);
 
@@ -74,7 +118,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const payload = {
                 title: document.getElementById('requestTitle').value || "Ex: Conveyor Belt Issue",
                 description: fData.get('description') || "",
-                created_by: "Mitchell Admin", // Hardcoded for demo, or read from session in real app
+                created_by: fData.get('createdBy') || "Unknown",
+                equipment_name: document.getElementById('equipmentSelect') ? document.getElementById('equipmentSelect').value : null,
                 equipment_category: fData.get('equipmentCategory'),
                 maintenance_type: fData.get('maintenanceType'),
                 team: fData.get('team'),
@@ -105,7 +150,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Reset form after delay
                 setTimeout(() => {
-                    // resetForm(); // Optional: keep form filled for testing
+                    // resetForm(); 
+                    window.location.href = 'index.html';
                 }, 1500);
 
             } catch (error) {

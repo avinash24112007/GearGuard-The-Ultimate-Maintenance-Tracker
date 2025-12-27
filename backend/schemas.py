@@ -1,11 +1,12 @@
 from pydantic import BaseModel
 from typing import Optional
-from datetime import date, time
+from datetime import date, time, datetime
 
 # Shared properties
 class MaintenanceLogBase(BaseModel):
     title: str
     description: str
+    equipment_name: Optional[str] = None
     created_by: Optional[str] = "Unknown"
     equipment_category: Optional[str] = "Uncategorized"
     maintenance_type: Optional[str] = "Corrective"
@@ -19,6 +20,7 @@ class MaintenanceLogBase(BaseModel):
     status: Optional[str] = "New Request"
 
 # Input schema for creation
+
 class MaintenanceLogCreate(MaintenanceLogBase):
     pass
 
@@ -30,7 +32,7 @@ class SearchQuery(BaseModel):
 # Schema for reading (response)
 class MaintenanceLogRead(MaintenanceLogBase):
     id: int
-    created_at: Optional[str] = None # simplified validation
+    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True # V2 Config

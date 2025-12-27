@@ -1,7 +1,7 @@
 // Calendar Logic
 
 // State
-let currentDate = new Date('2024-12-15T12:00:00'); // Default demo date
+let currentDate = new Date(); // Use actual current date
 let currentView = 'week'; // 'week', 'day', 'month'
 const CAL_START_HOUR = 6;
 const CAL_END_HOUR = 23;
@@ -11,8 +11,21 @@ const monthNames = ["December", "January", "February", "March", "April", "May", 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const daysShort = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
-function initCalendar() {
+// Store fetched events globally
+let calendarEvents = [];
+
+async function initCalendar() {
     console.log("Calendar Initialized");
+    // Fetch events from backend
+    try {
+        if (window.gearGuardApi) {
+            calendarEvents = await window.gearGuardApi.getLogs();
+            console.log("Loaded calendar events:", calendarEvents.length);
+        }
+    } catch (e) {
+        console.error("Failed to load calendar events:", e);
+        calendarEvents = [];
+    }
     setupEventListeners();
     render();
 }
@@ -149,16 +162,16 @@ function renderEvents(startOfPeriod) {
     if (currentView === 'week') endOfPeriod.setDate(startOfPeriod.getDate() + 7);
     else endOfPeriod.setDate(startOfPeriod.getDate() + 1);
 
-    const events = requestsData.filter(req => {
-        if (!req.scheduledDate) return false;
-        const d = new Date(req.scheduledDate);
+    const events = calendarEvents.filter(req => {
+        if (!req.scheduled_date) return false;
+        const d = new Date(req.scheduled_date);
         return d >= startOfPeriod && d < endOfPeriod;
     });
 
     document.querySelectorAll('.event-chip').forEach(el => el.remove());
 
     events.forEach(req => {
-        const d = new Date(req.scheduledDate);
+        const d = new Date(req.scheduled_date);
         let colIndex = 0;
         if (currentView === 'week') colIndex = d.getDay();
         else colIndex = 0;
@@ -169,15 +182,16 @@ function renderEvents(startOfPeriod) {
 
         const hoursFromStart = (hour - CAL_START_HOUR) + (minutes / 60);
         const top = hoursFromStart * HOUR_HEIGHT;
-        const height = (req.duration || 1) * HOUR_HEIGHT;
+        const durationHours = req.duration ? parseFloat(req.duration.split(':')[0]) : 1;
+        const height = durationHours * HOUR_HEIGHT;
 
         const chip = document.createElement('div');
-        chip.className = `event-chip ${getStageColorClass(req.stage)}`;
+        chip.className = `event-chip ${getStageColorClass(req.status)}`;
         chip.style.top = `${top}px`;
         chip.style.height = `${height}px`;
-        chip.innerHTML = `<i class="fas fa-tools"></i> ${req.subject}`;
-        chip.title = `${req.subject} \n${req.technician}`;
-        chip.onclick = () => alert(`Event: ${req.subject}\nTechnician: ${req.technician}\nTime: ${d.toLocaleString()}`);
+        chip.innerHTML = `<i class="fas fa-tools"></i> ${req.title}`;
+        chip.title = `${req.title} \n${req.responsible || 'Unassigned'}`;
+        chip.onclick = () => alert(`Event: ${req.title}\nTechnician: ${req.responsible || 'N/A'}\nTime: ${d.toLocaleString()}`);
 
         const col = document.getElementById(`col-${colIndex}`);
         if (col) col.appendChild(chip);
@@ -203,7 +217,7 @@ function renderMonth() {
 
         const isCurrentMonth = cellDate.getMonth() === month;
         const className = isCurrentMonth ? 'month-cell' : 'month-cell muted';
-        const isToday = isSameDate(cellDate, currentDate); // Or real today? Using state date.
+        const isToday = isSameDate(cellDate, currentDate);
 
         const cell = document.createElement('div');
         cell.className = className;
@@ -216,19 +230,19 @@ function renderMonth() {
         cell.appendChild(num);
 
         // Find Events for this day
-        const dayEvents = requestsData.filter(req => {
-            if (!req.scheduledDate) return false;
-            const d = new Date(req.scheduledDate);
+        const dayEvents = calendarEvents.filter(req => {
+            if (!req.scheduled_date) return false;
+            const d = new Date(req.scheduled_date);
             return isSameDate(d, cellDate);
         });
 
         dayEvents.forEach(req => {
             const ev = document.createElement('div');
-            ev.className = `month-event ${getStageColorClass(req.stage)}`;
-            ev.textContent = req.subject;
+            ev.className = `month-event ${getStageColorClass(req.status)}`;
+            ev.textContent = req.title;
             ev.onclick = (e) => {
                 e.stopPropagation();
-                alert(`${req.subject} (${req.technician})`);
+                alert(`${req.title} (${req.responsible || 'Unassigned'})`);
             };
             cell.appendChild(ev);
         });
@@ -236,8 +250,6 @@ function renderMonth() {
         // Click on cell to go to day view?
         cell.onclick = () => {
             currentDate = new Date(cellDate);
-            // switchView('day'); // Optional: Drill down on click
-            // For now, just select it
             document.querySelectorAll('.month-cell').forEach(c => c.classList.remove('today'));
             cell.classList.add('today');
         };
@@ -282,8 +294,8 @@ function renderMiniCalendar(date) {
     }
 }
 
-function getStageColorClass(stage) {
-    const s = stage.toLowerCase();
+function getStageColorClass(status) {
+    const s = (status || '').toLowerCase();
     if (s.includes('new')) return 'event-pink';
     if (s.includes('progress')) return 'event-green';
     if (s.includes('repair')) return 'event-green';
