@@ -1,5 +1,4 @@
 from sqlalchemy import Column, Integer, String, Text, Date, Time, Float, Boolean, TIMESTAMP, func
-from pgvector.sqlalchemy import Vector
 from .database import Base
 
 class MaintenanceLog(Base):
@@ -9,10 +8,6 @@ class MaintenanceLog(Base):
     title = Column(String, index=True)
     description = Column(Text)
     
-    # Vector column for embedding search (384 dims for simple transformers, 1536 for OpenAI)
-    # Adjust dimension based on the model used in embeddings.py
-    # using 1536 for OpenAI small embeddings as default example
-    description_vector = Column(Vector(1536))
     
     created_by = Column(String)
     equipment_category = Column(String)
@@ -29,3 +24,28 @@ class MaintenanceLog(Base):
     status = Column(String, default="New Request")
     
     created_at = Column(TIMESTAMP, server_default=func.now())
+
+class Equipment(Base):
+    __tablename__ = "equipment"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    category = Column(String)
+    used_by = Column(String)
+    maintenance_team = Column(String)
+    assigned_date = Column(Date, nullable=True)
+    technician = Column(String)
+    employee = Column(String)
+    scrap_date = Column(Date, nullable=True)
+    used_location = Column(String)
+    work_center = Column(String)
+    description = Column(Text, nullable=True)
+    
+class Team(Base):
+    __tablename__ = "teams"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    members = Column(String) # Storing as comma-separated string for simplicity
+    company = Column(String)
+    avatar_color = Column(String, default="#007bff") # Store a random color

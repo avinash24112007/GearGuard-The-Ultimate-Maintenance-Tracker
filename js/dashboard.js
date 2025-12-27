@@ -2,52 +2,52 @@
 
 // Mock Data matching the user's domain (Maintenance)
 const requestsData = [
-    { 
-        subject: "Test activity", 
-        employee: "Mitchell Admin", 
-        technician: "Aka Foster", 
-        category: "computer", 
-        stage: "New Request", 
+    {
+        subject: "Test activity",
+        employee: "Mitchell Admin",
+        technician: "Aka Foster",
+        category: "computer",
+        stage: "New Request",
         company: "My company",
         scheduledDate: "2024-12-15T09:00:00", // Sunday
         duration: 2 // hours
     },
-    { 
-        subject: "Conveyor Belt Check", 
-        employee: "Sarah Connor", 
-        technician: "Kyle Reese", 
-        category: "Machinery", 
-        stage: "In Progress", 
+    {
+        subject: "Conveyor Belt Check",
+        employee: "Sarah Connor",
+        technician: "Kyle Reese",
+        category: "Machinery",
+        stage: "In Progress",
         company: "Cyberdyne Systems",
         scheduledDate: "2024-12-16T14:00:00", // Monday
         duration: 3
     },
-    { 
-        subject: "Hydraulic Press Issue", 
-        employee: "John Doe", 
-        technician: "Alice Smith", 
-        category: "Tools", 
-        stage: "Repaired", 
+    {
+        subject: "Hydraulic Press Issue",
+        employee: "John Doe",
+        technician: "Alice Smith",
+        category: "Tools",
+        stage: "Repaired",
         company: "GearGuard Inc",
         scheduledDate: "2024-12-18T11:00:00", // Wednesday
         duration: 1.5
     },
-    { 
-        subject: "AC Maintenance", 
-        employee: "Jane Roe", 
-        technician: "Bob Builder", 
-        category: "HVAC", 
-        stage: "New Request", 
+    {
+        subject: "AC Maintenance",
+        employee: "Jane Roe",
+        technician: "Bob Builder",
+        category: "HVAC",
+        stage: "New Request",
         company: "CoolAir Ltd",
         scheduledDate: "2024-12-15T16:00:00", // Sunday
         duration: 1
     },
-    { 
-        subject: "Server Overheat", 
-        employee: "Tech Lead", 
-        technician: "Sys Admin", 
-        category: "IT", 
-        stage: "In Progress", 
+    {
+        subject: "Server Overheat",
+        employee: "Tech Lead",
+        technician: "Sys Admin",
+        category: "IT",
+        stage: "In Progress",
         company: "DataCorp",
         scheduledDate: "2024-12-19T08:00:00", // Thursday
         duration: 4
@@ -84,15 +84,21 @@ const requestsData = [
     }
 ];
 
-function initDashboard() {
+async function initDashboard() {
     console.log("Dashboard Initialized");
-    renderTable(requestsData);
-    updateStats();
+    try {
+        const logs = await window.gearGuardApi.getLogs();
+        renderTable(logs);
+        updateStats(logs);
+    } catch (e) {
+        console.error("Error loading dashboard:", e);
+    }
 }
 
-function updateStats() {
+function updateStats(data) {
+    if (!data) return;
     // Simple logic to count stats if we wanted to make it dynamic
-    const newCount = requestsData.filter(r => r.stage === 'New Request').length;
+    const newCount = data.filter(r => r.status === 'New Request').length;
     // We could update the DOM elements here if we added IDs to the stat values
     // document.getElementById('openRequestsCount').textContent = newCount + " Pending";
 }
@@ -100,29 +106,38 @@ function updateStats() {
 function renderTable(data) {
     const tbody = document.getElementById('requestTableBody');
     if (!tbody) return;
-    
+
     tbody.innerHTML = '';
-    
+
     data.forEach(req => {
         const tr = document.createElement('tr');
-        
+
+        // Map backend fields to UI
+        // Backend: title, created_by, responsible, equipment_category, status, company
+        const subject = req.title || "Untitled";
+        const employee = req.created_by || "Unknown";
+        const technician = req.responsible || "Unassigned";
+        const category = req.equipment_category || "General";
+        const stage = req.status || "New";
+        const company = req.company || "";
+
         // Generate Initials for Avatar
-        const initials = req.technician.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
-        const avatarColor = stringToColor(req.technician);
-        
+        const initials = technician.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        const avatarColor = stringToColor(technician);
+
         // Determine Chip Class
-        const stageClass = req.stage.toLowerCase().replace(' ', '-'); // "New Request" -> "new-request"
-        
+        const stageClass = stage.toLowerCase().replace(' ', '-'); // "New Request" -> "new-request"
+
         tr.innerHTML = `
-          <td>${req.subject}</td>
-          <td>${req.employee}</td>
+          <td>${subject}</td>
+          <td>${employee}</td>
           <td>
             <div class="avatar" style="background-color: ${avatarColor}">${initials}</div>
-            ${req.technician}
+            ${technician}
           </td>
-          <td>${req.category}</td>
-          <td><div class="chip ${stageClass}">${req.stage}</div></td>
-          <td>${req.company}</td>
+          <td>${category}</td>
+          <td><div class="chip ${stageClass}">${stage}</div></td>
+          <td>${company}</td>
         `;
         tbody.appendChild(tr);
     });
@@ -141,7 +156,7 @@ function stringToColor(str) {
 // Search Functionality
 function handleSearch(e) {
     const term = e.target.value.toLowerCase();
-    const filtered = requestsData.filter(item => 
+    const filtered = requestsData.filter(item =>
         item.subject.toLowerCase().includes(term) ||
         item.employee.toLowerCase().includes(term) ||
         item.technician.toLowerCase().includes(term)

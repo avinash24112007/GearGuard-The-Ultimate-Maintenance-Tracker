@@ -166,6 +166,7 @@
         </div>
     </div>
 
+    <script src="js/api.js"></script>
     <script>
         // Auth Check
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -215,31 +216,93 @@
         });
 
         // Form submission
-        equipForm.addEventListener('submit', (e) => {
+        equipForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const equipmentData = {
                 name: document.getElementById('equipName').value,
                 category: document.getElementById('equipCategory').value,
-                usedBy: document.getElementById('usedBy').value,
-                maintenanceTeam: document.getElementById('maintenanceTeam').value,
-                assignedDate: document.getElementById('assignedDate').value,
+                used_by: document.getElementById('usedBy').value,
+                maintenance_team: document.getElementById('maintenanceTeam').value,
+                assigned_date: document.getElementById('assignedDate').value || null,
                 technician: document.getElementById('technician').value,
                 employee: document.getElementById('employee').value,
-                scrapDate: document.getElementById('scrapDate').value,
-                usedLocation: document.getElementById('usedLocation').value,
-                workCenter: document.getElementById('workCenter').value,
+                scrap_date: document.getElementById('scrapDate').value || null,
+                used_location: document.getElementById('usedLocation').value,
+                work_center: document.getElementById('workCenter').value,
                 description: document.getElementById('description').value
             };
 
-            let equipment = JSON.parse(localStorage.getItem('equipment') || '[]');
-            equipment.push(equipmentData);
-            localStorage.setItem('equipment', JSON.stringify(equipment));
-
-            alert('Equipment saved successfully!');
-            equipForm.reset();
-            formContainer.style.display = 'none';
+            try {
+                if (window.gearGuardApi) {
+                    await window.gearGuardApi.addEquipment(equipmentData);
+                    alert('Equipment saved to database successfully!');
+                    equipForm.reset();
+                    formContainer.style.display = 'none';
+                    loadEquipment(); // Refresh list
+                } else {
+                    throw new Error("API not available");
+                }
+            } catch (error) {
+                console.error("Save failed:", error);
+                alert("Failed to save equipment: " + error.message);
+            }
         });
+
+        // Load Equipment
+        async function loadEquipment() {
+            try {
+                // Clear existing items (except toolbar/form) - wait, this page is raw HTML, it doesn't have a list view implemented yet besides the form?
+                // The current HTML has a "table-container" but no table inside it, just toolbar and form.
+                // I need to add a table to display items.
+
+                let table = document.querySelector('.equipment-table');
+                if (!table) {
+                    // Create table if not exists
+                    const tableContainer = document.querySelector('.table-container');
+                    const tbl = document.createElement('table');
+                    tbl.className = 'equipment-table';
+                    tbl.style.width = '100%';
+                    tbl.style.borderCollapse = 'collapse';
+                    tbl.style.marginTop = '20px';
+                    tbl.innerHTML = `
+                        <thead>
+                            <tr style="text-align:left; background:#f4f4f4;">
+                                <th style="padding:10px;">Name</th>
+                                <th style="padding:10px;">Category</th>
+                                <th style="padding:10px;">Assigned To</th>
+                                <th style="padding:10px;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="equipTableBody"></tbody>
+                    `;
+                    tableContainer.appendChild(tbl);
+                    table = tbl;
+                }
+
+                const items = await window.gearGuardApi.getEquipment();
+                const tbody = document.getElementById('equipTableBody');
+                tbody.innerHTML = '';
+
+                items.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.style.borderBottom = '1px solid #eee';
+                    tr.innerHTML = `
+                        <td style="padding:10px;">${item.name}</td>
+                        <td style="padding:10px;">${item.category || '-'}</td>
+                        <td style="padding:10px;">${item.employee || '-'}</td>
+                        <td style="padding:10px;">${item.scrap_date ? 'Scrapped' : 'Active'}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+            } catch (error) {
+                console.error("Load failed:", error);
+            }
+        }
+
+        // Load on start
+        loadEquipment();
     </script>
 </body>
 

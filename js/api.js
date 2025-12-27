@@ -54,6 +54,84 @@ const api = {
             console.error("Failed to search logs:", error);
             throw error;
         }
+    },
+
+    /**
+     * Get all maintenance logs
+     */
+    async getLogs() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/logs`);
+            if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+            return await response.json();
+        } catch (error) {
+            console.error("Failed to fetch logs:", error);
+            return [];
+        }
+    },
+
+    /**
+     * Add new equipment
+     */
+    async addEquipment(data) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/equipment`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+            if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+            return await response.json();
+        } catch (error) {
+            console.error("Failed to add equipment:", error);
+            throw error;
+        }
+    },
+
+    /**
+     * Get all equipment
+     */
+    async getEquipment() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/equipment`);
+            if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+            return await response.json();
+        } catch (error) {
+            console.error("Failed to fetch equipment:", error);
+            return [];
+        }
+    },
+
+    /**
+     * Add new team
+     */
+    async addTeam(data) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/teams`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+            if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+            return await response.json();
+        } catch (error) {
+            console.error("Failed to add team:", error);
+            throw error;
+        }
+    },
+
+    /**
+     * Get all teams
+     */
+    async getTeams() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/teams`);
+            if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+            return await response.json();
+        } catch (error) {
+            console.error("Failed to fetch teams:", error);
+            return [];
+        }
     }
 };
 

@@ -32,14 +32,11 @@ def read_root():
 
 @app.post("/add_log", response_model=schemas.MaintenanceLogRead)
 def add_log(log: schemas.MaintenanceLogCreate, db: Session = Depends(get_db)):
-    # 1. Generate Vector Embedding for description
-    vector = embeddings.embedding_service.get_embedding(log.description)
-    
     # 2. Create DB Model
     db_log = models.MaintenanceLog(
         title=log.title,
         description=log.description,
-        description_vector=vector, # pgvector handles the list -> vector conversion
+        # description_vector=vector, # Vector search disabled for SQLite
         created_by=log.created_by,
         equipment_category=log.equipment_category,
         maintenance_type=log.maintenance_type,
@@ -61,13 +58,11 @@ def add_log(log: schemas.MaintenanceLogCreate, db: Session = Depends(get_db)):
 
 @app.post("/search", response_model=List[schemas.MaintenanceLogRead])
 def search_logs(query: schemas.SearchQuery, db: Session = Depends(get_db)):
-    # 1. Vectorize query
-    query_vector = embeddings.embedding_service.get_embedding(query.query)
-    
-    # 2. Perform Similarity Search using pgvector operator (<-> is L2 distance, cosine distance is common too)
-    # Using L2 distance order by
-    results = db.query(models.MaintenanceLog).order_by(
-        models.MaintenanceLog.description_vector.l2_distance(query_vector)
+    # Vector search disabled for SQLite
+    # Return simple text match or empty list for now
+    # Implementing basic text search as fallback
+    results = db.query(models.MaintenanceLog).filter(
+        models.MaintenanceLog.description.contains(query.query)
     ).limit(query.limit).all()
     
     return results
@@ -76,3 +71,31 @@ def search_logs(query: schemas.SearchQuery, db: Session = Depends(get_db)):
 def get_all_logs(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     logs = db.query(models.MaintenanceLog).offset(skip).limit(limit).all()
     return logs
+
+# -- Equipment Endpoints --
+@app.post("/equipment", response_model=schemas.EquipmentRead)
+def create_equipment(item: schemas.EquipmentCreate, db: Session = Depends(get_db)):
+    db_item = models.Equipment(**item.dict())
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
+@app.get("/equipment", response_model=List[schemas.EquipmentRead])
+def get_equipment(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    items = db.query(models.Equipment).offset(skip).limit(limit).all()
+    return items
+
+# -- Teams Endpoints --
+@app.post("/teams", response_model=schemas.TeamRead)
+def create_team(team: schemas.TeamCreate, db: Session = Depends(get_db)):
+    db_team = models.Team(**team.dict())
+    db.add(db_team)
+    db.commit()
+    db.refresh(db_team)
+    return db_team
+
+@app.get("/teams", response_model=List[schemas.TeamRead])
+def get_teams(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    teams = db.query(models.Team).offset(skip).limit(limit).all()
+    return teams
