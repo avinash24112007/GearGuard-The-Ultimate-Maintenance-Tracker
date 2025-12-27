@@ -1,0 +1,112 @@
+/* Equipment Page Specific Styles */
+
+.equipment-form-container {
+    margin-top: 30px;
+    padding: 30px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    border: var(--card-border);
+}
+
+.form-grid-equip {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.form-column-equip {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group-equip {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group-equip label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-group-equip input,
+.form-group-equip textarea {
+    padding: 10px;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.95rem;
+    outline: none;
+    font-family: inherit;
+    background: transparent;
+    color: var(--text-primary);
+}
+
+.form-group-equip input:focus,
+.form-group-equip textarea:focus {
+    border-bottom-color: var(--focus-color);
+}
+
+.full-width-equip {
+    grid-column: 1 / -1;
+    margin-top: 10px;
+}
+
+.full-width-equip textarea {
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    padding: 12px;
+}
+
+.full-width-equip textarea:focus {
+    border-color: var(--focus-color);
+}
+
+/* Form Actions */
+.form-actions-equip {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+.btn-submit-equip {
+    padding: 12px 30px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.btn-submit-equip:hover {
+    background: #45a049;
+}
+
+.btn-cancel-equip {
+    padding: 12px 30px;
+    background: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.btn-cancel-equip:hover {
+    background: #da190b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-grid-equip {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}

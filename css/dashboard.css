@@ -189,6 +189,22 @@
     background: var(--bg-body);
 }
 
+.btn-filter {
+    padding: 10px 15px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.3s;
+}
+
+.btn-filter:hover {
+    background: var(--btn-bg);
+    color: white;
+    border-color: var(--btn-bg);
+}
+
 .btn-new {
     width: auto;
     margin: 0;

@@ -1,5 +1,24 @@
 /* Calendar Specific Styles */
 
+/* Calendar Specific Styles */
+
+/* Calendar Header Controls (Secondary Header) */
+.calendar-header-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-card);
+}
+
+.calendar-header-controls .header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Existing Calendar Styles */
 :root {
     --cal-border: #e0e0e0;
     --cal-header-bg: #fff;
@@ -37,22 +56,7 @@ body.calendar-page {
     background: var(--bg-body);
 }
 
-/* Header / Nav */
-.calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    border-bottom: 1px solid var(--border-color);
-    background: var(--bg-card);
-}
-
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
+/* Header / Nav - Replaced by .calendar-header-controls */
 .page-title {
     font-size: 1.5rem;
     font-weight: 600;

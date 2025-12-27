@@ -1,4 +1,9 @@
-/* Maintenance Request Specific Styles */
+/* Maintenance/* Request Page Styles */
+
+/* Navigation Styles - Now handled by dashboard.css */
+/* Removed: .page-nav-header, .nav-tabs-request (replaced by standard .nav-header, .nav-tabs) */
+
+/* Existing Request Styles */
 
 :root {
     --req-bg: #fff;
@@ -77,8 +82,12 @@ body.request-page {
     gap: 5px;
 }
 
-/* Status Bar */
+/* Status Bar Container */
 .status-bar-container {
+    position: relative;
+    margin-bottom: 30px;
+    margin-top: 0;
+    /* Remove extra space since we have nav now */
     padding: 10px 30px;
     border-bottom: 1px solid #eee;
     display: flex;

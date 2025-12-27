@@ -1,0 +1,40 @@
+/* Teams Page Specific Styles */
+
+.teams-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.teams-table thead {
+    background: transparent;
+}
+
+.teams-table th {
+    text-align: left;
+    padding: 15px;
+    color: var(--text-secondary);
+    border-bottom: 2px solid var(--border-color);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+}
+
+.teams-table td {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+    vertical-align: middle;
+    font-size: 0.95rem;
+}
+
+.teams-table tr:last-child td {
+    border-bottom: none;
+}
+
+.teams-table tr:hover td {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Avatar styles already defined in dashboard.css */

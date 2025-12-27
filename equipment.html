@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Equipment | GearGuard</title>
+    <style>
+        /* Base Styles - Copied from Dashboard */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        :root {
+            --bg-body: #ffffff;
+            --bg-card: #f9f9f9;
+            --text-primary: #333;
+            --text-secondary: #444;
+            --border-color: #ccc;
+            --focus-color: #007bff;
+            --btn-bg: #007bff;
+            --btn-hover: #0069d9;
+            --link-color: #007bff;
+            --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --card-border: 1px solid #eee;
+        }
+
+        .dark-mode {
+            --bg-body: #121212;
+            --bg-card: #1e1e1e;
+            --text-primary: #fff;
+            --text-secondary: #ddd;
+            --border-color: #555;
+            --focus-color: #61dafb;
+            --btn-bg: #333;
+            --btn-hover: #444;
+            --link-color: #61dafb;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            --card-border: 1px solid #333;
+        }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/equipment.css">
+</head>
+
+<body class="dashboard-active">
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="themeToggle">☀️</button>
+
+    <div class="dashboard-view active">
+        <div class="nav-header">
+            <div style="display:flex; align-items:center; gap:20px;">
+                <h2 style="margin:0;">GearGuard</h2>
+            </div>
+            <div class="user-profile">
+                <span id="userNameDisplay" style="font-weight:600; margin-right:15px;">Welcome, User</span>
+                <button onclick="handleLogout()"
+                    style="width:auto; padding: 8px 15px; margin:0; font-size:0.9rem; background: #666;">Logout</button>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <div class="nav-tab" onclick="window.location.href='index.html'" style="cursor: pointer;">Maintenance</div>
+            <div class="nav-tab" onclick="window.location.href='maintenance-calendar.html'" style="cursor: pointer;">
+                Maintenance Calendar</div>
+            <div class="nav-tab active">Equipment</div>
+            <div class="nav-tab" onclick="window.location.href='maintenance-request.html'" style="cursor: pointer;">
+                Reporting
+            </div>
+            <div class="nav-tab" onclick="window.location.href='teams.html'" style="cursor: pointer;">Teams</div>
+        </div>
+
+        <!-- Equipment Content -->
+        <div class="table-container">
+            <div class="toolbar">
+                <div class="search-bar">
+                    <input type="text" id="equipmentSearch" placeholder="Search equipment..." />
+                </div>
+                <button class="btn-new" id="toggleFormBtn">New</button>
+            </div>
+
+            <!-- Equipment Form -->
+            <div class="equipment-form-container" id="equipmentForm" style="display: none;">
+                <form id="equipForm">
+                    <div class="form-grid-equip">
+                        <!-- Left Column -->
+                        <div class="form-column-equip">
+                            <div class="form-group-equip">
+                                <label>Name?</label>
+                                <input type="text" id="equipName" placeholder="Samsung Monitor 15&quot;">
+                            </div>
+
+                            <div class="form-group-equip">
+                                <label>Equipment Category?</label>
+                                <input type="text" id="equipCategory" placeholder="Monitors">
+                            </div>
+
+                            <div class="form-group-equip">
+                                <label>Used By?</label>
+                                <input type="text" id="usedBy" placeholder="Employee">
+                            </div>
+
+                            <div class="form-group-equip">
+                                <label>Maintenance Team?</label>
+                                <input type="text" id="maintenanceTeam" placeholder="Internal Maintenance">
+                            </div>
+
+                            <div class="form-group-equip">
+                                <label>Assigned Date?</label>
+                                <input type="date" id="assignedDate">
+                            </div>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div class="form-column-equip">
+                            <div class="form-group-equip">
+                                <label>Technician?</label>
+                                <input type="text" id="technician" placeholder="Mitchell Admin">
+                            </div>
+
+                            <div class="form-group-equip">
+                                <label>Employee?</label>
+                                <input type="text" id="employee" placeholder="Abigail Peterson">
+                            </div>
+
+                            <div class="form-group-equip">
+                                <label>Scrap Date?</label>
+                                <input type="date" id="scrapDate">
+                            </div>
+
+                            <div class="form-group-equip">
+                                <label>Used in Location?</label>
+                                <input type="text" id="usedLocation" placeholder="">
+                            </div>
+
+                            <div class="form-group-equip">
+                                <label>Work Center?</label>
+                                <input type="text" id="workCenter" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group-equip full-width-equip">
+                        <label>Description</label>
+                        <textarea id="description" rows="4" placeholder="Enter equipment description..."></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-actions-equip">
+                        <button type="submit" class="btn-submit-equip">Save Equipment</button>
+                        <button type="button" class="btn-cancel-equip" id="cancelBtn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auth Check
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        } else {
+            document.getElementById('userNameDisplay').textContent = "Welcome, " + currentUser.name;
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+
+        // Theme Logic
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const savedTheme = localStorage.getItem('theme') || 'light';
+
+        if (savedTheme === 'dark') {
+            body.classList.add('dark-mode');
+            themeToggle.textContent = '🌙';
+        } else {
+            themeToggle.textContent = '☀️';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeToggle.textContent = isDark ? '🌙' : '☀️';
+        });
+
+        // Form Toggle
+        const toggleBtn = document.getElementById('toggleFormBtn');
+        const formContainer = document.getElementById('equipmentForm');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const equipForm = document.getElementById('equipForm');
+
+        toggleBtn.addEventListener('click', () => {
+            formContainer.style.display = formContainer.style.display === 'block' ? 'none' : 'block';
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            formContainer.style.display = 'none';
+            equipForm.reset();
+        });
+
+        // Form submission
+        equipForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const equipmentData = {
+                name: document.getElementById('equipName').value,
+                category: document.getElementById('equipCategory').value,
+                usedBy: document.getElementById('usedBy').value,
+                maintenanceTeam: document.getElementById('maintenanceTeam').value,
+                assignedDate: document.getElementById('assignedDate').value,
+                technician: document.getElementById('technician').value,
+                employee: document.getElementById('employee').value,
+                scrapDate: document.getElementById('scrapDate').value,
+                usedLocation: document.getElementById('usedLocation').value,
+                workCenter: document.getElementById('workCenter').value,
+                description: document.getElementById('description').value
+            };
+
+            let equipment = JSON.parse(localStorage.getItem('equipment') || '[]');
+            equipment.push(equipmentData);
+            localStorage.setItem('equipment', JSON.stringify(equipment));
+
+            alert('Equipment saved successfully!');
+            equipForm.reset();
+            formContainer.style.display = 'none';
+        });
+    </script>
+</body>
+
+</html>
