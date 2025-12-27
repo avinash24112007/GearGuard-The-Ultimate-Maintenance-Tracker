@@ -120,6 +120,7 @@ function render() {
 
     // Week/Day Render Logic
     let startOfPeriod;
+    const realToday = new Date(); // FIX: Use real date for red dot
 
     if (currentView === 'week') {
         const startOfWeek = new Date(currentDate);
@@ -135,7 +136,8 @@ function render() {
                 header.querySelector('.day-number').textContent = d.getDate();
 
                 const numEl = header.querySelector('.day-number');
-                if (isSameDate(d, currentDate)) numEl.classList.add('active');
+                // FIX: Highlight only if it matches REAL today
+                if (isSameDate(d, realToday)) numEl.classList.add('active');
                 else numEl.classList.remove('active');
             }
         }
@@ -145,12 +147,37 @@ function render() {
         if (header) {
             header.querySelector('.day-name').textContent = daysShort[currentDate.getDay()];
             header.querySelector('.day-number').textContent = currentDate.getDate();
-            header.querySelector('.day-number').classList.add('active');
+
+            const numEl = header.querySelector('.day-number');
+            if (isSameDate(currentDate, realToday)) numEl.classList.add('active');
+            else numEl.classList.remove('active');
         }
     }
 
     renderEvents(startOfPeriod);
     renderMiniCalendar(currentDate);
+    updateTimeLine(); // FIX: Call timeline update
+}
+
+function updateTimeLine() {
+    const timeLines = document.querySelectorAll('.current-time-line');
+    const now = new Date();
+    const hour = now.getHours();
+    const min = now.getMinutes();
+
+    // Hide if out of hours (optional, but keeps UI clean)
+    if (hour < CAL_START_HOUR || hour > CAL_END_HOUR) {
+        timeLines.forEach(el => el.style.display = 'none');
+        return;
+    }
+
+    const hoursFromStart = (hour - CAL_START_HOUR) + (min / 60);
+    const top = hoursFromStart * HOUR_HEIGHT;
+
+    timeLines.forEach(el => {
+        el.style.display = 'block';
+        el.style.top = `${top}px`;
+    });
 }
 
 function updateHeaderDate() {
@@ -163,26 +190,38 @@ function renderEvents(startOfPeriod) {
     else endOfPeriod.setDate(startOfPeriod.getDate() + 1);
 
     const events = calendarEvents.filter(req => {
-        if (!req.scheduled_date) return false;
-        const d = new Date(req.scheduled_date);
+        // FIX: Fallback to request_date if scheduled_date is missing
+        const dateStr = req.scheduled_date || req.request_date;
+        if (!dateStr) return false;
+        const d = new Date(dateStr);
         return d >= startOfPeriod && d < endOfPeriod;
     });
 
     document.querySelectorAll('.event-chip').forEach(el => el.remove());
 
     events.forEach(req => {
-        const d = new Date(req.scheduled_date);
+        const dateStr = req.scheduled_date || req.request_date;
+        const d = new Date(dateStr);
         let colIndex = 0;
         if (currentView === 'week') colIndex = d.getDay();
         else colIndex = 0;
 
         const hour = d.getHours();
-        const minutes = d.getMinutes();
-        if (hour < CAL_START_HOUR) return;
+        // If hour is 0 (default date), show at start hour (e.g. 9 AM)
+        let displayHour = hour;
+        if (hour === 0 && d.getMinutes() === 0) displayHour = 9;
 
-        const hoursFromStart = (hour - CAL_START_HOUR) + (minutes / 60);
+        if (displayHour < CAL_START_HOUR) return;
+
+        const hoursFromStart = (displayHour - CAL_START_HOUR);
         const top = hoursFromStart * HOUR_HEIGHT;
-        const durationHours = req.duration ? parseFloat(req.duration.split(':')[0]) : 1;
+
+        let durationHours = 1;
+        if (req.duration) {
+            const parts = req.duration.split(':');
+            durationHours = parseFloat(parts[0]) + (parseFloat(parts[1] || 0) / 60);
+        }
+
         const height = durationHours * HOUR_HEIGHT;
 
         const chip = document.createElement('div');
@@ -190,8 +229,8 @@ function renderEvents(startOfPeriod) {
         chip.style.top = `${top}px`;
         chip.style.height = `${height}px`;
         chip.innerHTML = `<i class="fas fa-tools"></i> ${req.title}`;
-        chip.title = `${req.title} \n${req.responsible || 'Unassigned'}`;
-        chip.onclick = () => alert(`Event: ${req.title}\nTechnician: ${req.responsible || 'N/A'}\nTime: ${d.toLocaleString()}`);
+        chip.title = `${req.title}\n${req.responsible || 'Unassigned'}\n${d.toLocaleDateString()}`;
+        chip.onclick = () => alert(`Event: ${req.title}\nTechnician: ${req.responsible || 'Unassigned'}\nDate: ${d.toLocaleString()}`);
 
         const col = document.getElementById(`col-${colIndex}`);
         if (col) col.appendChild(chip);
