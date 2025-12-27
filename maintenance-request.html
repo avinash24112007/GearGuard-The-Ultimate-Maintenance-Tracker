@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maintenance Request | GearGuard</title>
+
+    <style>
+        /* Inlined base vars for standalone viewing */
+        :root {
+            --bg-body: #f5f5f5;
+            --bg-card: #f5f5f5;
+            /* Page bg */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
+
+    <link rel="stylesheet" href="css/request.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="request-page">
+
+    <div class="request-container">
+
+        <!-- Top Controls / Status -->
+        <div class="status-bar-container">
+            <div class="header-actions" style="position: absolute; left: 30px; top: 15px;">
+                <button class="btn-worksheet">New</button>
+            </div>
+
+            <div class="status-bar">
+                <div class="status-step active">New Request</div>
+                <div class="status-step">In Progress</div>
+                <div class="status-step">Repaired</div>
+                <div class="status-step">Scrap</div>
+            </div>
+        </div>
+
+        <!-- Main Header -->
+        <header class="request-header">
+            <div>
+                <div class="breadcrumb">Maintenance Requests /</div>
+                <h1 class="request-title">Test activity</h1>
+            </div>
+            <div class="header-actions">
+                <button class="btn-worksheet"><i class="fas fa-pencil-alt"></i> Worksheet</button>
+            </div>
+            <div class="status-indicator-circle"></div>
+        </header>
+
+        <!-- Form Grid -->
+        <div class="form-grid">
+            <!-- Left Column -->
+            <div class="col-left">
+                <div class="form-group">
+                    <label>Created By</label>
+                    <div class="form-field">
+                        <div class="user-field">
+                            <!-- <div class="user-avatar"></div> -->
+                            <span>Mitchell Admin</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Maintenance For</label>
+                    <div class="form-field">
+                        <span>Equipment</span> <i class="fas fa-caret-down" style="float: right;"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Equipment</label>
+                    <div class="form-field">
+                        <span>Acer Laptop/LP/203/19281928</span> <i class="fas fa-caret-down" style="float: right;"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Category</label>
+                    <div class="form-field">
+                        <span>Computers</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Request Date</label>
+                    <div class="form-field">
+                        <span>12/18/2025</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Maintenance Type</label>
+                    <div style="flex: 1;">
+                        <div style="margin-bottom: 5px;">
+                            <i class="fas fa-circle" style="font-size: 0.8rem;"></i> Corrective
+                        </div>
+                        <div>
+                            <i class="far fa-circle" style="font-size: 0.8rem;"></i> Preventive
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-right">
+                <div class="form-group">
+                    <label>Internal Maintenance</label>
+                    <div class="form-field" style="border: none;">
+                        <!-- Just text in image example -->
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Technician</label>
+                    <div class="form-field">
+                        <span>Aka Foster</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Scheduled Date</label>
+                    <div class="form-field">
+                        <span>12/28/2025 14:30:00</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Duration</label>
+                    <div class="form-field">
+                        <span>00:00 hours</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Priority</label>
+                    <div class="priority-stars">
+                        <i class="fas fa-star priority-icon active"></i>
+                        <i class="fas fa-star priority-icon"></i>
+                        <i class="fas fa-star priority-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Company</label>
+                    <div class="form-field">
+                        <span>My Company (San Francisco)</span>
+                    </div>
+                </div>
+
+                <!-- Tags Area to match colorful tags in image -->
+                <div style="margin-top: 20px;">
+                    <div class="tag-list">
+                        <span class="tag wasp"><i class="fas fa-play" style="font-size: 0.6rem;"></i> Stylish
+                            Wasp</span>
+                        <span class="tag goldfish">Adolescent Goldfish</span>
+                        <span class="tag crocodile">Actual Crocodile</span>
+                        <span class="tag dolphin"><i class="fas fa-play" style="font-size: 0.6rem;"></i> Upbeat
+                            Dolphin</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-container">
+            <div class="tabs-header">
+                <div class="tab-btn active">Notes</div>
+                <div class="tab-btn">Instructions</div>
+            </div>
+            <div class="tab-content">
+                <div class="tag moose">Genuine Moose</div>
+                <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">
+                    (Notes content would go here...)
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

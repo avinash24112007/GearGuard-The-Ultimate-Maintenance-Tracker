@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maintenance Calendar | GearGuard</title>
+
+    <!-- Reuse existing base styles -->
+    <style>
+        /* Base Styles from index.html (inlined for prototype consistency, or import if possible but index.css was empty in plan assumption? 
+       Actually user has index.html with styles in head. I should link to index.css if it exists, or just copy the basics.
+       Looking at file listing, there was no index.css mentioned in `list_dir` output of root? 
+       Wait, step 5 showed `css/dashboard.css`. 
+       Step 6 `index.html` showed styles IN THE HEAD section.
+       So I need to include those styles or extract them. 
+       Use <link rel="stylesheet" href="css/dashboard.css"> mentioned in line 166 of index.html?
+       Let's assume I need to copy the critical variables and basics or link the dashboard.css if it has them.
+       Actually, I will inline the essential base variables to ensure it works standalone as requested.
+    */
+        :root {
+            --bg-body: #ffffff;
+            --bg-card: #f9f9f9;
+            --text-primary: #333;
+            --text-secondary: #444;
+            --border-color: #ccc;
+            --focus-color: #007bff;
+            --btn-bg: #007bff;
+            --btn-hover: #0069d9;
+            --link-color: #007bff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
+
+    <link rel="stylesheet" href="css/calendar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="calendar-page">
+
+    <div class="calendar-container">
+        <!-- Header -->
+        <header class="calendar-header">
+            <div class="header-left">
+                <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+                <h1 class="page-title">Maintenance Calendar</h1>
+            </div>
+
+            <div class="calendar-controls">
+                <div class="btn-group">
+                    <button id="btnPrev"><i class="fas fa-chevron-left"></i></button>
+                    <button id="btnNext"><i class="fas fa-chevron-right"></i></button>
+                    <button id="btnToday">Today</button>
+                </div>
+                <div class="btn-group">
+                    <button id="btnViewWeek" class="active">Week</button>
+                    <button id="btnViewDay">Day</button>
+                    <button id="btnViewMonth">Month</button>
+                </div>
+                <span class="date-display">December 2024</span>
+            </div>
+
+            <div class="user-profile-small">
+                <i class="fas fa-user-circle fa-lg"></i>
+            </div>
+        </header>
+
+        <!-- Main Body -->
+        <div class="calendar-body">
+
+            <!-- Time Grid -->
+            <div class="time-grid">
+                <!-- Header Row (Days) -->
+                <div class="grid-header">
+                    <div class="day-col-header">
+                        <div class="day-name">SUN</div>
+                        <div class="day-number">14</div>
+                    </div>
+                    <div class="day-col-header">
+                        <div class="day-name">MON</div>
+                        <div class="day-number">15</div>
+                    </div>
+                    <div class="day-col-header">
+                        <div class="day-name">TUE</div>
+                        <div class="day-number">16</div>
+                    </div>
+                    <div class="day-col-header">
+                        <div class="day-name">WED</div>
+                        <div class="day-number">17</div>
+                    </div>
+                    <div class="day-col-header">
+                        <div class="day-name">THU</div>
+                        <div class="day-number active">18</div>
+                    </div>
+                    <div class="day-col-header">
+                        <div class="day-name">FRI</div>
+                        <div class="day-number">19</div>
+                    </div>
+                    <div class="day-col-header">
+                        <div class="day-name">SAT</div>
+                        <div class="day-number">20</div>
+                    </div>
+                </div>
+
+                <!-- Scrollable Grid -->
+                <div class="grid-scroll-area">
+                    <!-- Time Labels -->
+                    <div class="time-labels">
+                        <!-- 6:00 to 23:00 -->
+                        <div class="time-label">06:00</div>
+                        <div class="time-label">07:00</div>
+                        <div class="time-label">08:00</div>
+                        <div class="time-label">09:00</div>
+                        <div class="time-label">10:00</div>
+                        <div class="time-label">11:00</div>
+                        <div class="time-label">12:00</div>
+                        <div class="time-label">13:00</div>
+                        <div class="time-label">14:00</div>
+                        <div class="time-label">15:00</div>
+                        <div class="time-label">16:00</div>
+                        <div class="time-label">17:00</div>
+                        <div class="time-label">18:00</div>
+                        <div class="time-label">19:00</div>
+                        <div class="time-label">20:00</div>
+                        <div class="time-label">21:00</div>
+                        <div class="time-label">22:00</div>
+                        <div class="time-label">23:00</div>
+                    </div>
+
+                    <!-- Grid Columns -->
+                    <div class="grid-cols">
+                        <!-- Current Time Line (Example Position 18:30) -->
+                        <div class="current-time-line" style="top: 750px;"></div>
+
+                        <div class="grid-day-col"></div> <!-- Sun -->
+                        <div class="grid-day-col"></div> <!-- Mon -->
+                        <div class="grid-day-col"></div> <!-- Tue -->
+                        <div class="grid-day-col"></div> <!-- Wed -->
+                        <div class="grid-day-col"></div> <!-- Thu -->
+                        <div class="grid-day-col"></div> <!-- Fri -->
+                        <div class="grid-day-col"></div> <!-- Sat -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="calendar-sidebar">
+                <div class="mini-calendar">
+                    <div class="mini-cal-header">
+                        <span>December 2024</span>
+                        <div>
+                            <i class="fas fa-chevron-left" style="font-size: 0.8rem; margin-right: 10px;"></i>
+                            <i class="fas fa-chevron-right" style="font-size: 0.8rem;"></i>
+                        </div>
+                    </div>
+                    <div class="mini-cal-grid">
+                        <div class="mini-day-head">S</div>
+                        <div class="mini-day-head">M</div>
+                        <div class="mini-day-head">T</div>
+                        <div class="mini-day-head">W</div>
+                        <div class="mini-day-head">T</div>
+                        <div class="mini-day-head">F</div>
+                        <div class="mini-day-head">S</div>
+
+                        <!-- Days -->
+                        <div class="mini-day muted">30</div>
+                        <div class="mini-day">1</div>
+                        <div class="mini-day">2</div>
+                        <div class="mini-day">3</div>
+                        <div class="mini-day">4</div>
+                        <div class="mini-day">5</div>
+                        <div class="mini-day">6</div>
+                        <div class="mini-day">7</div>
+                        <div class="mini-day">8</div>
+                        <div class="mini-day">9</div>
+                        <div class="mini-day">10</div>
+                        <div class="mini-day">11</div>
+                        <div class="mini-day">12</div>
+                        <div class="mini-day">13</div>
+                        <div class="mini-day">14</div>
+                        <div class="mini-day">15</div>
+                        <div class="mini-day">16</div>
+                        <div class="mini-day">17</div>
+                        <div class="mini-day selected">18</div>
+                        <div class="mini-day">19</div>
+                        <div class="mini-day">20</div>
+                        <div class="mini-day">21</div>
+                        <div class="mini-day">22</div>
+                        <div class="mini-day">23</div>
+                        <div class="mini-day">24</div>
+                        <div class="mini-day">25</div>
+                        <div class="mini-day">26</div>
+                        <div class="mini-day">27</div>
+                        <div class="mini-day">28</div>
+                        <div class="mini-day">29</div>
+                        <div class="mini-day">30</div>
+                        <div class="mini-day">31</div>
+                    </div>
+                </div>
+
+                <!-- Filters or Legend could go here -->
+                <div style="margin-top: 20px;">
+                    <h4 style="margin-bottom: 15px; font-size: 0.95rem;">Technicians</h4>
+                    <div style="display: flex; align-items: center; margin-bottom: 10px; font-size: 0.9rem;">
+                        <div
+                            style="width: 10px; height: 10px; background: var(--cal-event-text-green); border-radius: 50%; margin-right: 10px;">
+                        </div>
+                        <span>Available</span>
+                    </div>
+                    <div style="display: flex; align-items: center; margin-bottom: 10px; font-size: 0.9rem;">
+                        <div
+                            style="width: 10px; height: 10px; background: var(--cal-event-text-red); border-radius: 50%; margin-right: 10px;">
+                        </div>
+                        <span>Busy</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        // Scroll to 6:00 AM roughly on load
+        document.querySelector('.grid-scroll-area').scrollTop = 0; 
+    </script>
+
+    <script src="js/dashboard.js"></script>
+    <script src="js/calendar.js"></script>
+</body>
+
+</html>

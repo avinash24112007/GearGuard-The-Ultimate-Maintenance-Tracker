@@ -1,0 +1,279 @@
+/* Maintenance Request Specific Styles */
+
+:root {
+    --req-bg: #fff;
+    --req-border: #ccc;
+    --req-text: #333;
+    --status-bar-bg: #f0f0f0;
+    --status-active-bg: #333;
+    /* Dark for active step */
+    --status-active-text: #fff;
+    --tag-green-bg: #dff0d8;
+    --tag-green-text: #3c763d;
+    --tag-purple-bg: #e1dced;
+    --tag-purple-text: #5e35b1;
+    --tag-orange-bg: #ffecb3;
+    --tag-orange-text: #ff8f00;
+    --tag-blue-bg: #b3e5fc;
+    --tag-blue-text: #0277bd;
+    --tag-pink-bg: #f8bbd0;
+    --tag-pink-text: #c2185b;
+}
+
+body.request-page {
+    background: var(--bg-card);
+    /* Light gray background for contrast with the sheet */
+    min-height: 100vh;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.request-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+/* Header */
+.request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    border-bottom: 1px solid #eee;
+}
+
+.breadcrumb {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.request-title {
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #000;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-worksheet {
+    border: 1px solid #ddd;
+    background: #fff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Status Bar */
+.status-bar-container {
+    padding: 10px 30px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.status-bar {
+    display: flex;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    font-size: 0.85rem;
+}
+
+.status-step {
+    padding: 8px 15px;
+    background: #f8f8f8;
+    color: #666;
+    position: relative;
+    cursor: pointer;
+    border-right: 1px solid #ddd;
+}
+
+.status-step:last-child {
+    border-right: none;
+}
+
+.status-step.active {
+    background: #555;
+    color: #fff;
+}
+
+.status-step::after {
+    /* Arrow effect */
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -10px;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid #f8f8f8;
+    /* default */
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.status-step.active::after {
+    border-left-color: #555;
+}
+
+/* Form Body */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    /* Label on left for this layout */
+}
+
+.form-group label {
+    width: 140px;
+    font-size: 0.95rem;
+    color: #444;
+    font-weight: 500;
+}
+
+.form-field {
+    flex: 1;
+    border-bottom: 1px solid #ccc;
+    padding: 5px 0;
+    font-size: 1rem;
+    color: #000;
+    position: relative;
+}
+
+.form-field input,
+.form-field select {
+    border: none;
+    background: transparent;
+    width: 100%;
+    outline: none;
+    font-size: inherit;
+    color: inherit;
+}
+
+.tag-list {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-top: 5px;
+}
+
+.tag {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.tag.wasp {
+    background: #b0f2bc;
+    color: #1e6d2e;
+}
+
+.tag.goldfish {
+    background: #eab8e8;
+    color: #7b1fa2;
+}
+
+.tag.crocodile {
+    background: #ffe0b2;
+    color: #e65100;
+}
+
+.tag.dolphin {
+    background: #b3e5fc;
+    color: #0277bd;
+}
+
+.tag.moose {
+    background: #f8bbd0;
+    color: #c2185b;
+}
+
+.priority-stars {
+    display: flex;
+    gap: 5px;
+}
+
+.priority-icon {
+    font-size: 1.2rem;
+    color: #888;
+}
+
+.priority-icon.active {
+    color: #ffb300;
+}
+
+/* Tabs */
+.tabs-container {
+    padding: 0 30px;
+    margin-top: 20px;
+}
+
+.tabs-header {
+    display: flex;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #666;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+}
+
+.tab-btn.active {
+    color: #000;
+    border-bottom-color: #000;
+}
+
+.tab-content {
+    min-height: 100px;
+}
+
+/* Avatar / User specifics */
+.user-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar {
+    width: 24px;
+    height: 24px;
+    background: #ccc;
+    border-radius: 50%;
+}
+
+/* Status indicator circle (top right) */
+.status-indicator-circle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 1px solid #999;
+}
